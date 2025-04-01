@@ -1585,10 +1585,15 @@ namespace NPOI.XWPF.UserModel
                 runs.RemoveAt(pos);
                 iRuns.Remove(run);
                 // Remove the run from the low-level XML
-                int itemsPos = paragraph.Items.IndexOf(runs[(pos)].GetCTR());
-                paragraph.Items.RemoveAt(itemsPos);
-                paragraph.ItemsElementName.RemoveAt(itemsPos);
-
+                //calculate the correct pos as our run/irun list contains hyperlinks and fields so is different to the paragraph R array.
+                int rPos = 0;
+                for (int i = 0; i < pos; i++)
+                {
+                    XWPFRun currRun = runs[i];
+                    if (!(currRun is XWPFHyperlinkRun || currRun is XWPFFieldRun))
+                        rPos++;
+                }
+                GetCTP().RemoveR(pos);
                 return true;
             }
             return false;
